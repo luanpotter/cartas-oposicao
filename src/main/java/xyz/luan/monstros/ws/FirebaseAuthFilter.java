@@ -22,7 +22,7 @@ public class FirebaseAuthFilter extends HttpFilter {
 		String authToken = request.getHeader("Authorization");
 
 		if (Objects.isNull(authToken)) {
-			throw new HttpException(403, "Login is mandatory for every request, add a Authorization header with firebase auth");
+			throw new HttpException(403, "Login is mandatory for every API request, add a Authorization header with firebase auth");
 		}
 
 		String idToken = authToken.split(" ")[1];
