@@ -11,7 +11,7 @@
     <properties>
         <yawp.version>2.0.0alpha</yawp.version>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.51</appengine.target.version>
+        <appengine.target.version>1.9.60</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -20,6 +20,16 @@
             <groupId>io.yawp</groupId>
             <artifactId>yawp</artifactId>
             <version>${yawp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.16</version>
         </dependency>
 
         <!-- testing dependencies -->
@@ -44,8 +54,8 @@
                 <version>2.5.1</version>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -74,7 +84,7 @@
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.target.version}</version>
                 <configuration>
-                    <!-- <address>0.0.0.0</address> -->
+                    <address>0.0.0.0</address>
                     <jvmFlags>
                         <jvmFlag>-Xdebug</jvmFlag>
                         <jvmFlag>-Xnoagent</jvmFlag>
