@@ -13,9 +13,9 @@ public class Normalizer {
 
 	public String normalizeCpf(String cpf) {
 		String unmasked = cpf.replaceAll("[^\\d]", "");
-		if (unmasked.length() != 14) {
-			throw new HttpException(422, "CPF must have exactly 14 digits");
+		if (unmasked.length() != 11) {
+			throw new HttpException(422, "CPF must have exactly 11 digits");
 		}
-		return unmasked.replaceAll("(\\d{2})(\\d{3})(\\d{3})(\\d{4})(\\d{2})", "$1.$2.$3-$4");
+		return unmasked.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
 	}
 }
