@@ -4,7 +4,7 @@ import io.yawp.commons.http.HttpException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class Util {
+public class Normalizer {
 
 	public String normalizeRg(String rg) {
 		// Nothing to do, RG's vary widely

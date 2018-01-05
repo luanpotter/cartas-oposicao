@@ -4,7 +4,7 @@ import io.yawp.commons.http.HttpException;
 import io.yawp.commons.http.annotation.PUT;
 import io.yawp.repository.IdRef;
 import io.yawp.repository.actions.Action;
-import xyz.luan.monstros.util.Util;
+import xyz.luan.monstros.util.Normalizer;
 import xyz.luan.monstros.ws.AuthHolder;
 
 import java.util.Map;
@@ -27,10 +27,10 @@ public class UserUpdateAction extends Action<User> {
 					user.setName(value);
 					break;
 				case "rg":
-					user.setRg(Util.normalizeRg(value));
+					user.setRg(Normalizer.normalizeRg(value));
 					break;
 				case "cpf":
-					user.setCpf(Util.normalizeCpf(value));
+					user.setCpf(Normalizer.normalizeCpf(value));
 					break;
 				default:
 					if (value == null) {
