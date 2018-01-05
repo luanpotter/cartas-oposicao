@@ -4,7 +4,7 @@ import io.yawp.commons.http.HttpException;
 import io.yawp.commons.http.annotation.PUT;
 import io.yawp.repository.IdRef;
 import io.yawp.repository.actions.Action;
-import xyz.luan.monstros.Util;
+import xyz.luan.monstros.util.Util;
 import xyz.luan.monstros.ws.AuthHolder;
 
 import java.util.Map;
