@@ -14,6 +14,8 @@ public class Generator {
 	}
 
 	public Model createModel(String fileId) {
-		return new Model();
+		Model model = new Model();
+		model.setFileId(fileId);
+		return model;
 	}
 }
