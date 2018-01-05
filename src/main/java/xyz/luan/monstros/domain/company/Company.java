@@ -17,10 +17,10 @@ public class Company {
 	@Id
 	private IdRef<Company> id;
 
-	private String name;
-
 	@Index
 	private String domain;
+
+	private String name;
 
 	@Json
 	private List<Model> models = new ArrayList<>();

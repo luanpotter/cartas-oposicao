@@ -8,6 +8,7 @@ import io.yawp.repository.annotations.Json;
 import lombok.Data;
 import xyz.luan.monstros.domain.company.Company;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -30,5 +31,5 @@ public class User {
 	private String cpf;
 
 	@Json
-	private Map<String, String> customParameters;
+	private Map<String, String> customParameters = new HashMap<>();
 }

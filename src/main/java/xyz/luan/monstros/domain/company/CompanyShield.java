@@ -1,10 +1,12 @@
 package xyz.luan.monstros.domain.company;
 
+import io.yawp.commons.http.annotation.PUT;
 import io.yawp.repository.IdRef;
 import io.yawp.repository.shields.Shield;
 import xyz.luan.monstros.ws.AuthHolder;
 
 import java.util.List;
+import java.util.Map;
 
 public class CompanyShield extends Shield<Company> {
 
@@ -30,6 +32,11 @@ public class CompanyShield extends Shield<Company> {
 
 	@Override
 	public void show(IdRef<Company> id) {
+		allow(AuthHolder.user.get().getCompany().equals(id));
+	}
+
+	@PUT("/fields")
+	public void updateFields(IdRef<Company> id, Map<String, String> args) {
 		allow(AuthHolder.user.get().getCompany().equals(id));
 	}
 }
