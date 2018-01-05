@@ -8,7 +8,13 @@ public class GeneratorTest {
 
 	@Test
 	public void testExtractParameters() {
+		List<String> params = Generator.extractParameters("Shalom!\nHey {{fullName}}! And {{age}}...");
+		Assert.assertArrayEquals(new String[]{"fullName", "age"}, params.toArray());
+	}
+
+	@Test
+	public void testExtractParametersIgnoreDefaultParameters() {
 		List<String> params = Generator.extractParameters("Shalom!\nHey {{name}}! And {{age}}...");
-		Assert.assertArrayEquals(new String[]{"name", "age"}, params.toArray());
+		Assert.assertArrayEquals(new String[]{"age"}, params.toArray());
 	}
 }

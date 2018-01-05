@@ -32,4 +32,14 @@ public class User {
 
 	@Json
 	private Map<String, String> customParameters = new HashMap<>();
+
+	public Map<String, String> getParameterMap() {
+		Map<String, String> m = new HashMap<>();
+		m.putAll(customParameters);
+		m.put("email", email);
+		m.put("name", name);
+		m.put("rg", rg);
+		m.put("cpf", cpf);
+		return m;
+	}
 }

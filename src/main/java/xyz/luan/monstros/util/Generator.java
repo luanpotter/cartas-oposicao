@@ -8,15 +8,20 @@ import xyz.luan.monstros.domain.user.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
-
-// TODO generator class impl
 
 @UtilityClass
 public class Generator {
 
+	// TODO generate method
 	public String generate(Model model, User user) {
+		DocsAPI doc = new GoogleAPI().doc(model.getFileId());
+		Map<String, String> params = user.getParameterMap();
+		// replace params
+		// generate pdf
+		// send mail
 		return "Not implemented yet!";
 	}
 
@@ -30,6 +35,8 @@ public class Generator {
 	}
 
 	public static List<String> extractParameters(String content) {
-		return Arrays.stream(content.replaceAll("[^{]*\\{\\{([^}]*)}}[^{]*", "$1}").split("}")).collect(toList());
+		return Arrays.stream(content.replaceAll("[^{]*\\{\\{([^}]*)}}[^{]*", "$1}").split("}"))
+				.filter(parameter -> !Arrays.asList("name", "date", "cpf", "rg", "email").contains(parameter))
+				.collect(toList());
 	}
 }
