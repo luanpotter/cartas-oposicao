@@ -11,6 +11,8 @@ firebase.initializeApp({
   messagingSenderId: "153053898759"
 });
 
+const API = "http://localhost:8082/api/";
+
 const getLogin = () => {
   const data = localStorage.getItem("login_data");
   if (data) {
@@ -22,9 +24,9 @@ const getLogin = () => {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      login: getLogin()
-    };
+    const login = getLogin();
+    this.state = { login };
+    this.fetchUser(login);
   }
 
   render() {
@@ -33,11 +35,19 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Gerador de Cartas de Oposição</h1>
         </header>
-        <p className="App-intro">
-          {this.state.login ? this.state.login.token : this.loginPage()}
-        </p>
+        <p className="App-intro">{this.router()}</p>
       </div>
     );
+  }
+
+  router() {
+    if (!this.state.login) {
+      return this.loginPage();
+    }
+    if (!this.state.login.user) {
+      return <span>Loading user info...</span>;
+    }
+    return <span>Hello, {this.state.login.user}</span>
   }
 
   loginPage() {
@@ -46,12 +56,30 @@ class App extends Component {
 
   doLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then(result => {
-      const token = result.credential.accessToken;
-      const login = { token };
-      localStorage.setItem('login_data', JSON.stringify(login));
-      this.setState({ login });
-    }).catch(error => console.log(JSON.stringify(error)));
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(result => {
+        const token = result.credential.accessToken;
+        const login = { token };
+        localStorage.setItem("login_data", JSON.stringify(login));
+        this.fetchUser(login);
+      })
+      .catch(error => console.log(error));
+  }
+
+  fetchUser(login) {
+    fetch(API + "users/me", this.headers(login))
+      .then(me => {
+        console.log(me);
+        login.user = me;
+        this.setState({ login });
+      })
+      .catch(error => console.log(error));
+  }
+
+  headers(login) {
+    return { headers: { Authorization: 'Bearer login.token' } };
   }
 }
 

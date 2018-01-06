@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import io.yawp.commons.http.HttpException;
 import io.yawp.repository.Yawp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.luan.monstros.domain.company.Company;
 import xyz.luan.monstros.domain.user.User;
 
@@ -17,12 +19,19 @@ import java.util.concurrent.ExecutionException;
 
 public class FirebaseAuthFilter extends HttpFilter {
 
+	private Logger LOGGER = LoggerFactory.getLogger(FirebaseAuthFilter.class);
+
 	@Override
 	protected void filter(HttpServletRequest request, HttpServletResponse response) throws ExecutionException, InterruptedException {
 		String authToken = request.getHeader("Authorization");
+		LOGGER.info("Request received [url: %s][auth: %s]", request.getRequestURI(), authToken);
 
-		if (Objects.isNull(authToken)) {
-			throw new HttpException(403, "Login is mandatory for every API request, add a Authorization header with firebase auth");
+		if (request.getMethod().equals("OPTIONS")) {
+			return;
+		}
+
+		if (Objects.isNull(authToken) || !authToken.contains(" ")) {
+			throw new HttpException(403, "Login is mandatory for every API request, add a 'Authorization: Bearer <token>' header with firebase auth");
 		}
 
 		String idToken = authToken.split(" ")[1];
@@ -80,7 +89,7 @@ public class FirebaseAuthFilter extends HttpFilter {
 
 	private static FirebaseAuth getFirebase() {
 		if (_auth == null) {
-			FirebaseOptions options = new FirebaseOptions.Builder().setProjectId("doorbell-api").setCredentials(GoogleCredentials.newBuilder().build()).build();
+			FirebaseOptions options = new FirebaseOptions.Builder().setProjectId("cartas-oposicao").setCredentials(GoogleCredentials.newBuilder().build()).build();
 			FirebaseApp app = FirebaseApp.initializeApp(options);
 			_auth = FirebaseAuth.getInstance(app);
 		}
