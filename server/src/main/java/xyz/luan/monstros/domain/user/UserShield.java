@@ -36,7 +36,7 @@ public class UserShield extends Shield<User> {
 		allow(AuthHolder.user.get().getId().equals(id));
 	}
 
-	@PUT("/fields")
+	@PUT("fields")
 	public void updateFields(IdRef<User> id, Map<String, String> args) {
 		allow(AuthHolder.user.get().getId().equals(id));
 	}

@@ -15,6 +15,7 @@ import xyz.luan.monstros.domain.user.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -26,10 +27,6 @@ public class FirebaseAuthFilter extends HttpFilter {
     protected void filter(HttpServletRequest request, HttpServletResponse response) throws IOException, ExecutionException, InterruptedException {
         String authToken = request.getHeader("Authorization");
         LOGGER.info("Request received [url: %s][auth: %s]", request.getRequestURI(), authToken);
-
-        if (request.getMethod().equals("OPTIONS")) {
-            return;
-        }
 
         if (Objects.isNull(authToken) || !authToken.contains(" ")) {
             throw new HttpException(403, "Login is mandatory for every API request, add a 'Authorization: Bearer <token>' header with firebase auth");

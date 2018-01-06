@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class UserUpdateAction extends Action<User> {
 
-	@PUT("/fields")
+	@PUT("fields")
 	public User updateFields(IdRef<User> id, Map<String, String> args) {
 		User user = AuthHolder.user.get();
 		args.forEach((key, value) -> {

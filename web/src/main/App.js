@@ -8,7 +8,10 @@ import Admin from "admin/Admin";
 
 const uiConfig = {
   signInFlow: "popup",
-  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+  callbacks: {
+    signInSuccess: () => false
+  }
 };
 
 firebase.initializeApp({
@@ -32,13 +35,17 @@ const getLogin = () => {
   return null;
 };
 
-const bakeFetch = login => (route, method = "GET") => {
-  return fetch(API + route, options(method, login));
+const bakeFetch = login => (route, method = "GET", data = null) => {
+  if (route.startsWith('/')) {
+    route = route.substr(1);
+  }
+  return fetch(API + route, options(method, login, data));
 };
 
-const options = (method, login) => {
+const options = (method, login, data) => {
   return {
     method,
+    body: data ? JSON.stringify(data) : undefined,
     headers: { Authorization: "Bearer " + login.idToken }
   };
 };
@@ -72,21 +79,27 @@ class App extends Component {
   }
 
   render() {
-    return <div className="App">
+    return (
+      <div className="App">
         <header className="App-header">
           <h1 className="App-title">Gerador de Cartas de Oposição</h1>
           <span className="App-person-card">
             <span>
               Hello{this.state.login ? `, ${this.state.login.name}!` : "!"}
             </span>
-            {this.state.login ? <span className="click" onClick={() => this.logout()}>
+            {this.state.login ? (
+              <span className="click" onClick={() => this.logout()}>
                 {" "}
                 | Logout
-              </span> : ""}
+              </span>
+            ) : (
+              ""
+            )}
           </span>
         </header>
         <div className="App-intro">{this.router()}</div>
-      </div>;
+      </div>
+    );
   }
 
   router() {
@@ -113,7 +126,6 @@ class App extends Component {
   async fetchUser(login) {
     const resp = await bakeFetch(login)("users/me");
     login.user = await resp.json();
-    console.log(login);
     this.setState({ login });
   }
 }

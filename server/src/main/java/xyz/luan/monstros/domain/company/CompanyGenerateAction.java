@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CompanyGenerateAction extends Action<Company> {
 
-	@PUT("/generate")
+	@PUT("generate")
 	public String generate(IdRef<Company> id, Map<String, String> args) {
 		Company company = AuthHolder.company.get();
 		String modelRef = args.get("modelRef");

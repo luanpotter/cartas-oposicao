@@ -13,38 +13,52 @@ import static java.util.logging.Level.SEVERE;
 
 public abstract class HttpFilter implements Filter {
 
-	private static final Logger LOGGER = Logger.getLogger(HttpFilter.class.getCanonicalName());
+    private static final Logger LOGGER = Logger.getLogger(HttpFilter.class.getCanonicalName());
 
-	@Override
-	public void init(FilterConfig filterConfig) {
-	}
+    @Override
+    public void init(FilterConfig filterConfig) {
+    }
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
-		HttpServletResponse resp = (HttpServletResponse) response;
-		try {
-			filter((HttpServletRequest) request, resp);
-			chain.doFilter(request, response);
-		} catch (HttpException ex) {
-			handleException(resp, ex);
-		} catch (Exception e) {
-			LOGGER.log(SEVERE, "Unexpected error on Filter", e);
-			handleException(resp, new HttpException(500, "Unexpected error on filter"));
-		}
-	}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        if (req.getMethod().equals("OPTIONS")) {
+            resp.setStatus(200);
+            resp.setHeader("Access-Control-Allow-Credentials", "true");
+            resp.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+            resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD");
+            resp.setHeader("Access-Control-Allow-Origin", "*");
+            write(resp, "Ok!");
+        }
 
-	private void handleException(HttpServletResponse response, HttpException ex) {
-		response.setStatus(ex.getHttpStatus());
-		try (PrintWriter writer = response.getWriter()) {
-			writer.write(ex.getText());
-		} catch (IOException e) {
-			LOGGER.log(SEVERE, "Unexpected exception while writing response", e);
-		}
-	}
+        try {
+            filter(req, resp);
+            chain.doFilter(req, resp);
+        } catch (HttpException ex) {
+            handleException(resp, ex);
+        } catch (Exception e) {
+            LOGGER.log(SEVERE, "Unexpected error on Filter", e);
+            handleException(resp, new HttpException(500, "Unexpected error on filter"));
+        }
+    }
 
-	protected abstract void filter(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    private void handleException(HttpServletResponse response, HttpException ex) {
+        response.setStatus(ex.getHttpStatus());
+        write(response, ex.getText());
+    }
 
-	@Override
-	public void destroy() {
-	}
+    private void write(HttpServletResponse response, String text) {
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(text);
+        } catch (IOException e) {
+            LOGGER.log(SEVERE, "Unexpected exception while writing response", e);
+        }
+    }
+
+    protected abstract void filter(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+    @Override
+    public void destroy() {
+    }
 }

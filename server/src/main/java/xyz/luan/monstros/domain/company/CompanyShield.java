@@ -35,12 +35,12 @@ public class CompanyShield extends Shield<Company> {
 		allow(AuthHolder.user.get().getCompany().equals(id));
 	}
 
-	@PUT("/fields")
+	@PUT("fields")
 	public void updateFields(IdRef<Company> id, Map<String, String> args) {
 		allow(AuthHolder.user.get().getCompany().equals(id));
 	}
 
-	@PUT("/generate")
+	@PUT("generate")
 	public void generate(IdRef<Company> id, Map<String, String> args) {
 		allow(AuthHolder.user.get().getCompany().equals(id));
 	}

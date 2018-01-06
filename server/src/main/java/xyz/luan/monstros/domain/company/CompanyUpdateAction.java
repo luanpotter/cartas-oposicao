@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 
 public class CompanyUpdateAction extends Action<Company> {
 
-	@PUT("/fields")
+	@PUT("fields")
 	public Company updateFields(IdRef<Company> id, Map<String, String> args) {
 		Company company = AuthHolder.company.get();
 		args.forEach((key, value) -> {
