@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import "./App.css";
 import * as firebase from "firebase";
+import { FirebaseAuth } from "react-firebaseui";
+
+const uiConfig = {
+  signInFlow: "popup",
+  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+};
 
 firebase.initializeApp({
   apiKey: "AIzaSyCERrddd8CzLd3axsLfEYhq0xiiflmQsvI",
@@ -11,7 +17,9 @@ firebase.initializeApp({
   messagingSenderId: "153053898759"
 });
 
-const API = window.location.href.includes("localhost") ? "http://localhost:8082/api/" : "/api/";
+const API = window.location.href.includes("localhost")
+  ? "http://localhost:8082/api/"
+  : "/api/";
 
 const getLogin = () => {
   const data = localStorage.getItem("login_data");
@@ -26,7 +34,27 @@ class App extends Component {
     super(props);
     const login = getLogin();
     this.state = { login };
-    this.fetchUser(login);
+    if (login) {
+      this.fetchUser(login);
+    }
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const email = user.email;
+        const name = user.displayName || email;
+
+        user.getIdToken().then(idToken => {
+          const login = { email, name, idToken };
+          localStorage.setItem("login_data", JSON.stringify(login));
+          this.setState({ login });
+          this.fetchUser(login);
+        });
+      } else {
+        console.error("No user, mate!");
+      }
+    });
   }
 
   render() {
@@ -35,7 +63,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Gerador de Cartas de Oposição</h1>
         </header>
-        <p className="App-intro">{this.router()}</p>
+        <div className="App-intro">{this.router()}</div>
       </div>
     );
   }
@@ -47,39 +75,22 @@ class App extends Component {
     if (!this.state.login.user) {
       return <span>Loading user info...</span>;
     }
-    return <span>Hello, {this.state.login.user}</span>
+    return <span>Hello, {this.state.login.user.email}</span>;
   }
 
   loginPage() {
-    return <button onClick={() => this.doLogin()}>Login</button>;
+    return <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />;
   }
 
-  doLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then(result => {
-        const token = result.credential.accessToken;
-        const login = { token };
-        localStorage.setItem("login_data", JSON.stringify(login));
-        this.fetchUser(login);
-      })
-      .catch(error => console.log(error));
-  }
-
-  fetchUser(login) {
-    fetch(API + "users/me", this.headers(login))
-      .then(me => {
-        console.log(me);
-        login.user = me;
-        this.setState({ login });
-      })
-      .catch(error => console.log(error));
+  async fetchUser(login) {
+    const resp = await fetch(API + "users/me", this.headers(login));
+    login.user = await resp.json();
+    console.log(login);
+    this.setState({ login });
   }
 
   headers(login) {
-    return { headers: { Authorization: 'Bearer ' + login.token } };
+    return { headers: { Authorization: "Bearer " + login.idToken } };
   }
 }
 

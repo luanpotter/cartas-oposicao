@@ -90,9 +90,10 @@ public class FirebaseAuthFilter extends HttpFilter {
 
     private static FirebaseAuth getFirebase() throws IOException {
         if (_auth == null) {
+            GoogleCredentials credentials = GoogleCredentials.fromStream(FirebaseAuthFilter.class.getResourceAsStream("/service-account-key.json"));
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setProjectId("cartas-oposicao")
-                    .setCredentials(GoogleCredentials.getApplicationDefault())
+                    .setCredentials(credentials)
                     .build();
             FirebaseApp app = FirebaseApp.initializeApp(options);
             _auth = FirebaseAuth.getInstance(app);
