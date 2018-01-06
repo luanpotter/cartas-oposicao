@@ -16,3 +16,9 @@
 .App-intro {
   font-size: large;
 }
+
+.App-person-card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

@@ -3,6 +3,8 @@ import * as firebase from "firebase";
 import { FirebaseAuth } from "react-firebaseui";
 
 import "main/App.css";
+import Generator from "generator/Generator";
+import Admin from "admin/Admin";
 
 const uiConfig = {
   signInFlow: "popup",
@@ -28,6 +30,17 @@ const getLogin = () => {
     return JSON.parse(data);
   }
   return null;
+};
+
+const bakeFetch = login => (route, method = "GET") => {
+  return fetch(API + route, options(method, login));
+};
+
+const options = (method, login) => {
+  return {
+    method,
+    headers: { Authorization: "Bearer " + login.idToken }
+  };
 };
 
 class App extends Component {
@@ -59,14 +72,21 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div className="App">
+    return <div className="App">
         <header className="App-header">
           <h1 className="App-title">Gerador de Cartas de Oposição</h1>
+          <span className="App-person-card">
+            <span>
+              Hello{this.state.login ? `, ${this.state.login.name}!` : "!"}
+            </span>
+            {this.state.login ? <span className="click" onClick={() => this.logout()}>
+                {" "}
+                | Logout
+              </span> : ""}
+          </span>
         </header>
         <div className="App-intro">{this.router()}</div>
-      </div>
-    );
+      </div>;
   }
 
   router() {
@@ -76,22 +96,25 @@ class App extends Component {
     if (!this.state.login.user) {
       return <span>Loading user info...</span>;
     }
-    return <span>Hello, {this.state.login.user.email}</span>;
+    const isRH = window.location.href.endsWith("/rh");
+    const C = isRH ? Admin : Generator;
+    return <C login={this.state.login} fetch={bakeFetch(this.state.login)} />;
   }
 
   loginPage() {
     return <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />;
   }
 
+  logout() {
+    localStorage.setItem("login_data", null);
+    this.setState({ login: null });
+  }
+
   async fetchUser(login) {
-    const resp = await fetch(API + "users/me", this.headers(login));
+    const resp = await bakeFetch(login)("users/me");
     login.user = await resp.json();
     console.log(login);
     this.setState({ login });
-  }
-
-  headers(login) {
-    return { headers: { Authorization: "Bearer " + login.idToken } };
   }
 }
 
