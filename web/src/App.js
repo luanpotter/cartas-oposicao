@@ -79,7 +79,7 @@ class App extends Component {
   }
 
   headers(login) {
-    return { headers: { Authorization: 'Bearer login.token' } };
+    return { headers: { Authorization: 'Bearer ' + login.token } };
   }
 }
 
