@@ -1,5 +1,6 @@
 package xyz.luan.monstros.domain.user;
 
+import io.yawp.commons.http.annotation.GET;
 import io.yawp.commons.http.annotation.PUT;
 import io.yawp.repository.IdRef;
 import io.yawp.repository.shields.Shield;
@@ -38,5 +39,10 @@ public class UserShield extends Shield<User> {
 	@PUT("/fields")
 	public void updateFields(IdRef<User> id, Map<String, String> args) {
 		allow(AuthHolder.user.get().getId().equals(id));
+	}
+
+	@GET
+	public void me() {
+		allow(true);
 	}
 }
