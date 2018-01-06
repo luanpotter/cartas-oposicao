@@ -11,7 +11,7 @@ firebase.initializeApp({
   messagingSenderId: "153053898759"
 });
 
-const API = window.location.href.constains("localhost") ? "http://localhost:8082/api/" : "/api";
+const API = window.location.href.includes("localhost") ? "http://localhost:8082/api/" : "/api";
 
 const getLogin = () => {
   const data = localStorage.getItem("login_data");
