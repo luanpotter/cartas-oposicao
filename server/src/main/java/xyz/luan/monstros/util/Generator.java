@@ -25,13 +25,10 @@ public class Generator {
 		return "Not implemented yet!";
 	}
 
-	public Model createModel(String fileId) {
-		Model model = new Model();
-		model.setFileId(fileId);
-		DocsAPI doc = new GoogleAPI().doc(fileId);
+	public void enrichModel(Model model) {
+		DocsAPI doc = new GoogleAPI().doc(model.getFileId());
 		model.setFileName(doc.getName());
 		model.setCustomParameterNames(extractParameters(doc.getText()));
-		return model;
 	}
 
 	public static List<String> extractParameters(String content) {

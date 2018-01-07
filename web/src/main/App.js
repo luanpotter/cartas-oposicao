@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as firebase from "firebase";
 import { FirebaseAuth } from "react-firebaseui";
+import "purecss/build/pure-min.css";
 
 import "main/App.css";
 import Generator from "generator/Generator";
