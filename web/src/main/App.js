@@ -110,7 +110,7 @@ class App extends Component {
     if (!this.state.login.user) {
       return <span>Loading user info...</span>;
     }
-    const isRH = window.location.href.endsWith("/rh");
+    const isRH = window.location.href.endsWith("rh");
     const C = isRH ? Admin : Generator;
     return <C login={this.state.login} fetch={bakeFetch(this.state.login)} />;
   }
